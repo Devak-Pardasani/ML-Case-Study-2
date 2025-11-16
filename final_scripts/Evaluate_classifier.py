@@ -9,7 +9,7 @@ set 2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score
-from Classify_activity import predict_test
+from final_scripts.Classify_activity import predict_test
 
 sensor_names = ['Acc_x', 'Acc_y', 'Acc_z', 'Gyr_x', 'Gyr_y', 'Gyr_z']
 train_suffix = '_train_1.csv'
