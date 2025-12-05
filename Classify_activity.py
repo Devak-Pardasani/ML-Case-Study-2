@@ -24,7 +24,7 @@ import numpy as np
 import xgboost as xgb
 from scipy.stats import mode
 
-G = 9.81
+G = 9.80665
 def predict_test(train_data, train_labels, test_data):
     # -------------------------------
     # Map labels to 0-based for XGBoost
@@ -69,15 +69,16 @@ def predict_test(train_data, train_labels, test_data):
             min_v = np.min(v)
             max_v = np.max(v)
             rng = max_v - min_v
-            energy = np.mean(v**2)
+            energy = np.mean(v ** 2)
             median = np.median(v)
             q25 = np.percentile(v, 25)
             q75 = np.percentile(v, 75)
             iqr = q75 - q25
-            skew = 0 if std==0 else np.mean((v-mean)**3)/(std**3)
-            kurt = 0 if std==0 else np.mean((v-mean)**4)/(std**4)-3
-            rms = np.sqrt(np.mean(v**2))
-            return [mean, std, min_v, max_v, rng, energy, median, q25, q75, iqr, skew, kurt, rms]
+            skew = 0 if std == 0 else ((np.mean((v - mean) ** 3)) / (std ** 3))
+            kurt = 0 if std == 0 else ((np.mean((v - mean) ** 4)) / (std ** 4)) - 3
+            rms = np.sqrt(np.mean(v ** 2))
+            var = std ** 2
+            return [mean, std, min_v, max_v, rng, energy, median, iqr, skew, kurt, rms, var]
 
         feats = []
         for v in (ax, ay, az, gx, gy, gz):
@@ -132,7 +133,7 @@ def predict_test(train_data, train_labels, test_data):
     clf = xgb.XGBClassifier(
         objective='multi:softmax',
         num_class=len(unique_labels),
-        n_estimators=400,
+        n_estimators=600,
         max_depth=3,
         learning_rate=0.1,
         n_jobs=-1,
